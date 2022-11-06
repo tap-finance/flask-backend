@@ -1,74 +1,22 @@
-from dotenv import load_dotenv
 from flask import Flask
 import requests
-from markupsafe import escape
-import time
-import os
+from dune_query_utils import execute_query, get_query_status, get_query_results, query_request_start
 
-load_dotenv()
 app = Flask(__name__)
 
-API_KEY = os.getenv("DUNE_API_KEY") 
-HEADER = {"x-dune-api-key" : API_KEY}
-
-BASE_URL = "https://api.dune.com/api/v1/"
-
-def make_api_url(module, action, ID):
-
-    url = BASE_URL + module + "/" + ID + "/" + action
-
-    return url
-
-def execute_query(query_id):
-    """
-    Takes in the query ID.
-    Calls the API to execute the query.
-    Returns the execution ID of the instance which is executing the query.
-    """
-
-    url = make_api_url("query", "execute", query_id)
-    response = requests.post(url, headers=HEADER)
-    execution_id = response.json()['execution_id']
-
-    return execution_id
-
-def get_query_results(execution_id):
-    """
-    Takes in an execution ID.
-    Fetches the results returned from the query using the API
-    Returns the results response object
-    """
-
-    url = make_api_url("execution", "results", execution_id)
-    response = requests.get(url, headers=HEADER)
-
-    return response
-
-@app.route("/sudoswap_analytics", methods= ['GET'])
+@app.route("/sudoswap_analytics_24hr", methods= ['GET'])
 def sudoswap_volume():
     query_id = '1531117'
     
-    execution_id = execute_query(query_id)
-    
-    # mucho cuidado
-    time.sleep(2)
-    
-    data = get_query_results(execution_id)
+    data = query_request_start(query_id)    
 
-    print(data.content)
     return data.content
         
-@app.route("/sudoswap_tvl", methods= ['GET'])
+@app.route("/sudoswap_analytics_tvl", methods= ['GET'])
 def sudoswap_tvl():
-    query_id = '1531350'
+    query_id = '1532688'
     
-    execution_id = execute_query(query_id)
-    
-    # mucho cuidado
-    time.sleep(2)
-    
-    data = get_query_results(execution_id)
+    data = query_request_start(query_id)  
 
-    print(data.content)
     return data.content
         
