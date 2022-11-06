@@ -17,6 +17,19 @@ def make_api_url(module, action, ID):
 
     return url
 
+def execute_query_with_params(query_id, param_dict):
+    """
+    Takes in the query ID. And a dictionary containing parameter values.
+    Calls the API to execute the query.
+    Returns the execution ID of the instance which is executing the query.
+    """
+
+    url = make_api_url("query", "execute", query_id)
+    response = requests.post(url, headers=HEADER, json={"query_parameters" : param_dict})
+    execution_id = response.json()['execution_id']
+
+    return execution_id
+
 def execute_query(query_id):
     """
     Takes in the query ID.
@@ -55,8 +68,8 @@ def get_query_results(execution_id):
 
     return response
 
-def query_request_start(query_id):
-    execution_id = execute_query(query_id)
+def query_request_start(query_id,param_dict):
+    execution_id = execute_query_with_params(query_id,param_dict)
     
     execution_status = get_query_status(execution_id)
 
