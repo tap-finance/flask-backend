@@ -1,6 +1,6 @@
 # flask-backend
 Dune + TheGraph query implementation via Flask.
-cd into repo and pip3 install -r requirements.txt
+cd into the repo and pip3 install -r requirements.txt
 
 # Environment Variables
 Before running, create .env file with Dune API Key as:
